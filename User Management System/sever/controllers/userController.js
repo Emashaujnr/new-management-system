@@ -22,10 +22,8 @@ exports.view = (req, res) => {
         let removedUser = req.query.removed;
         res.render('home', { rows, removedUser });
       } else {
-        console.log("---------------");
         console.log(err);
       }
-
       console.log('The data from user table: \n', rows);
     });
   });
@@ -51,10 +49,19 @@ exports.find = (req, res) => {
   });
 }
 
-exports.form = (req, res) => {
+/*exports.form = (req, res) => {
   console.log("red");
   res.render('add-user');
+}*/
+
+
+
+
+exports.showadduser = (req, res) => {
+  console.log("show add user");
+  res.render('user-form');
 }
+
 
 // Add new user
 exports.create = (req, res) => {
@@ -70,7 +77,28 @@ exports.create = (req, res) => {
       // When done with the connection, release it
       connection.release();
       if (!err) {
-        res.render('add-user', { alert: 'User added successfully.' });
+        res.render('user-form', { alert: 'User added successfully.' });
+      } else {
+        console.log(err);
+      }
+      console.log('The data from user table: \n', rows);
+    });
+  });
+}
+
+
+exports.edit = (req, res) => {
+  console.log("show edit user");
+ 
+  pool.getConnection((err, connection) => {
+    if (err) throw err; // not connected!
+    console.log('Connected as ID ' + connection.threadId);
+    // User the connection
+    connection.query('SELECT * FROM user WHERE id = ?', [req.params.id], (err, rows) => {
+      // When done with the connection, release it
+      connection.release();
+      if (!err) {
+        res.render('edit-user', { rows });
       } else {
         console.log(err);
       }
@@ -81,7 +109,7 @@ exports.create = (req, res) => {
 
 
 // Edit user
-exports.edit = (req, res) => {
+exports.edits = (req, res) => {
   pool.getConnection((err, connection) => {
     if (err) throw err; // not connected!
     console.log('Connected as ID ' + connection.threadId);
@@ -90,7 +118,7 @@ exports.edit = (req, res) => {
       // When done with the connection, release it
       connection.release();
       if (!err) {
-        res.render('edituser', { rows });
+        res.render('edit-user', { rows });
       } else {
         console.log(err);
       }
@@ -122,7 +150,7 @@ exports.update = (req, res) => {
             // When done with the connection, release it
             connection.release();
             if (!err) {
-              res.render('edituser', { rows, alert: `${first_name} has been updated.` });
+              res.render('edit-user', { rows, alert: `${first_name} has been updated.` });
             } else {
               console.log(err);
             }
@@ -142,23 +170,23 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
 
   // Delete a record
-   pool.getConnection((err, connection) => {
-     if(err) throw err; // not connected!
-     console.log('Connected as ID ' + connection.threadId);
+  // pool.getConnection((err, connection) => {
+  //   if(err) throw err; // not connected!
+  //   console.log('Connected as ID ' + connection.threadId);
 
-    // User the connection
-     connection.query('DELETE FROM user WHERE id = ?', [req.params.id], (err, rows) => {
-       // When done with the connection, release it
-       connection.release();
-       if(!err) {
-         res.redirect('/');
-       } else {
-         console.log(err);
-       }
-       console.log('The data from user table: \n', rows);
+  //   // User the connection
+  //   connection.query('DELETE FROM user WHERE id = ?', [req.params.id], (err, rows) => {
+  //     // When done with the connection, release it
+  //     connection.release();
+  //     if(!err) {
+  //       res.redirect('/');
+  //     } else {
+  //       console.log(err);
+  //     }
+  //     console.log('The data from user table: \n', rows);
 
-     });
-   });
+  //   });
+  // });
 
   // Hide a record
   pool.getConnection((err, connection) => {
@@ -171,7 +199,7 @@ exports.delete = (req, res) => {
       } else {
         console.log(err);
       }
-      console.log('The data from beer table are: \n', rows);
+      console.log('The data from user table are: \n', rows);
     });
   });
 
@@ -188,7 +216,7 @@ exports.viewall = (req, res) => {
       // When done with the connection, release it
       connection.release();
       if (!err) {
-        res.render('viewuser', { rows });
+        res.render('view-user', { rows });
       } else {
         console.log(err);
       }
